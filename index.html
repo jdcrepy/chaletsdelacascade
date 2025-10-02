@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Disponibilités logements</title>
+</head>
+<body>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Disponibilités logements</title>
+</head>
+<body>
+
+<h2>Vérifiez la disponibilité de nos appartements</h2>
+
+<div>
+  <label>Choisissez un logement :</label>
+  <select id="logement-select">
+    <option value="">--Sélectionner--</option>
+  </select>
+
+  <label>Choisissez une semaine :</label>
+  <select id="date-select">
+    <option value="">--Sélectionner--</option>
+  </select>
+
+  <button id="verif-btn">Vérifier</button>
+</div>
+
+<div id="resultat" style="margin-top:20px;"></div>
+
+<!-- PapaParse pour lire Google Sheets -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+<script>
+const sheetId = "1ewqwedsuXVDG1Dc24vEGK-MAhkp35zoowgD2-WZVohE"; // Remplace par ton ID Google Sheet
+const sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
+
+let logements = [];
+
+// Charger les données depuis Google Sheets
+Papa.parse(sheetUrl, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: function(results) {
+        logements = results.data;
+
+        // Remplir la liste des logements
+        const selectLog = document.getElementById("logement-select");
+        const noms = [...new Set(logements.map(l => l.Logement).filter(Boolean))];
+        noms.forEach(nom => {
+            const opt = document.createElement("option");
+            opt.value = nom;
+            opt.textContent = nom;
+            selectLog.appendChild(opt);
+        });
+    }
+});
+
+// Remplir les dates disponibles
+document.getElementById("logement-select").addEventListener("change", function() {
+    const logementChoisi = this.value;
+    const selectDate = document.getElementById("date-select");
+    selectDate.innerHTML = '<option value="">--Sélectionner--</option>';
+
+    if(!logementChoisi) return;
+
+    const dates = logements
+        .filter(l => l.Logement === logementChoisi)
+        .map(l => l.Date_debut)
+        .filter(Boolean);
+
+    dates.forEach(d => {
+        const opt = document.createElement("option");
+        opt.value = d;
+        opt.textContent = d;
+        selectDate.appendChild(opt);
+    });
+});
+
+// Vérifier la disponibilité
+document.getElementById("verif-btn").addEventListener("click", () => {
+    const logementChoisi = document.getElementById("logement-select").value;
+    const dateChoisie = document.getElementById("date-select").value;
+    const divRes = document.getElementById("resultat");
+
+    if (!logementChoisi || !dateChoisie) {
+        divRes.innerHTML = `<p>L'appartement choisi n'est pas disponible.</p>`;
+        return;
+    }
+
+    const tarif = logements.find(l => l.Logement === logementChoisi && l.Date_debut === dateChoisie);
+
+    if(tarif && tarif.Prix_semaine && tarif.Taxe_sejour) {
+        divRes.innerHTML = `<p>Le logement <strong>${logementChoisi}</strong> choisi est disponible !</p>
+                            <p>Prix de la semaine : ${tarif.Prix_semaine} €<br>
+                            Taxe de séjour : ${tarif.Taxe_sejour} €</p>`;
+    } else {
+        divRes.innerHTML = `<p>L'appartement choisi n'est pas disponible.</p>`;
+    }
+});
+</script>
+
+</body>
+</html>
+
+
+</body>
+</html>
