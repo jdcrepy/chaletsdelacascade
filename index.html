@@ -92,6 +92,9 @@ Papa.parse(sheetUrl, {
     complete: function(results) {
         logements = results.data;
 
+        // Vérifier les données chargées
+        console.log(logements);
+
         // Remplir la liste des logements
         const selectLog = document.getElementById("logement-select");
         const noms = [...new Set(logements.map(l => l.Logement).filter(Boolean))];
@@ -101,6 +104,10 @@ Papa.parse(sheetUrl, {
             opt.textContent = nom;
             selectLog.appendChild(opt);
         });
+    },
+    error: function(err) {
+        console.error("Erreur lors du chargement du Google Sheet :", err);
+        document.getElementById("resultat").innerHTML = `<p>Impossible de charger les données. Vérifiez que le Google Sheet est publié sur le web.</p>`;
     }
 });
 
@@ -146,6 +153,14 @@ dateSelect.addEventListener("change", () => {
         resultHtml += `<p>Prix de la semaine : ${tarif.Prix_semaine} €<br>`;
         if(tarif.Taxe_sejour) resultHtml += `Taxe de séjour : ${tarif.Taxe_sejour} €<br>`;
         if(tarif.Prix_draps) resultHtml += `Prix des draps : ${tarif.Prix_draps} €<br>`;
-        if(tarif.Prix_menage) resultHtml += `Prix du ménage : ${t_
+        if(tarif.Prix_menage) resultHtml += `Prix du ménage : ${tarif.Prix_menage} €</p>`;
 
+        divRes.innerHTML = resultHtml;
+    } else {
+        divRes.innerHTML = `<p>L'appartement choisi n'est pas disponible.</p>`;
+    }
+});
+</script>
 
+</body>
+</html>
