@@ -4,32 +4,70 @@
     <meta charset="UTF-8">
     <title>Disponibilités logements</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        label { display: block; margin-top: 10px; }
-        select { margin-bottom: 10px; padding: 5px; }
-        button { padding: 5px 10px; margin-top: 10px; }
-        #resultat { margin-top: 20px; font-weight: bold; }
+        /* Fond plein écran */
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: #fff;
+            background-image: url('https://storage.e.jimdo.com/cdn-cgi/image/quality=85,fit=scale-down,format=auto,width=2560,height=1707/image/278204261/5d2b2601-6651-48f3-ae7e-b7e705ec5b46.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* Centrer le formulaire */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .form-box {
+            background-color: rgba(0,0,0,0.7);
+            padding: 30px 40px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 300px;
+        }
+
+        select, button {
+            padding: 8px;
+            margin: 10px 0;
+            width: 100%;
+            max-width: 250px;
+        }
+
+        #resultat {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
 
-<h2>Vérifiez la disponibilité de nos appartements</h2>
+<div class="container">
+    <div class="form-box">
+        <h2>Vérifiez la disponibilité</h2>
 
-<div>
-  <label>Choisissez un logement :</label>
-  <select id="logement-select">
-    <option value="">--Sélectionner--</option>
-  </select>
+        <label>Choisissez un logement :</label>
+        <select id="logement-select">
+            <option value="">--Sélectionner--</option>
+        </select>
 
-  <label>Choisissez une semaine :</label>
-  <select id="date-select">
-    <option value="">--Sélectionner--</option>
-  </select>
+        <label>Choisissez une semaine :</label>
+        <select id="date-select">
+            <option value="">--Sélectionner--</option>
+        </select>
 
-  <button id="verif-btn">Vérifier</button>
+        <div id="resultat"></div>
+    </div>
 </div>
-
-<div id="resultat"></div>
 
 <!-- PapaParse pour lire Google Sheets -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -60,11 +98,15 @@ Papa.parse(sheetUrl, {
     }
 });
 
-// Remplir les dates disponibles
-document.getElementById("logement-select").addEventListener("change", function() {
-    const logementChoisi = this.value;
-    const selectDate = document.getElementById("date-select");
-    selectDate.innerHTML = '<option value="">--Sélectionner--</option>';
+// Remplir les dates disponibles et afficher le résultat automatiquement
+const logementSelect = document.getElementById("logement-select");
+const dateSelect = document.getElementById("date-select");
+const divRes = document.getElementById("resultat");
+
+logementSelect.addEventListener("change", () => {
+    const logementChoisi = logementSelect.value;
+    dateSelect.innerHTML = '<option value="">--Sélectionner--</option>';
+    divRes.innerHTML = ''; // Efface le résultat précédent
 
     if(!logementChoisi) return;
 
@@ -77,15 +119,13 @@ document.getElementById("logement-select").addEventListener("change", function()
         const opt = document.createElement("option");
         opt.value = d;
         opt.textContent = d;
-        selectDate.appendChild(opt);
+        dateSelect.appendChild(opt);
     });
 });
 
-// Vérifier la disponibilité
-document.getElementById("verif-btn").addEventListener("click", () => {
-    const logementChoisi = document.getElementById("logement-select").value;
-    const dateChoisie = document.getElementById("date-select").value;
-    const divRes = document.getElementById("resultat");
+dateSelect.addEventListener("change", () => {
+    const logementChoisi = logementSelect.value;
+    const dateChoisie = dateSelect.value;
 
     if (!logementChoisi || !dateChoisie) {
         divRes.innerHTML = `<p>L'appartement choisi n'est pas disponible.</p>`;
