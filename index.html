@@ -141,7 +141,7 @@ dateSelect.addEventListener("change", () => {
     const dateChoisie = dateSelect.value;
 
     if (!logementChoisi || !dateChoisie) {
-        divRes.innerHTML = `<p>Désolé, l'appartement <strong>${logementChoisi}</strong> n'est plus disponible.</p>`;
+        divRes.innerHTML = `<p>Désolé, l'appartement <strong>${logementChoisi}</strong> n'est plus disponible sur la periode demandée.</p>`;
         return;
     }
 
