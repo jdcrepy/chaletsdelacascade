@@ -150,10 +150,10 @@ dateSelect.addEventListener("change", () => {
     if(tarif && tarif.Prix_semaine) {
         // Afficher toutes les informations disponibles
         let resultHtml = `<p>Le logement <strong>${logementChoisi}</strong> choisi est disponible !</p>`;
-        resultHtml += `<p>Prix de la semaine : ${tarif.Prix_semaine} €<br>`;
-        if(tarif.Taxe_sejour) resultHtml += `Taxe de séjour : ${tarif.Taxe_sejour} €<br>`;
-        if(tarif.Prix_draps) resultHtml += `Prix des draps : ${tarif.Prix_draps} €<br>`;
-        if(tarif.Prix_menage) resultHtml += `Prix du ménage : ${tarif.Prix_menage} €</p>`;
+        resultHtml += `<p>Prix de la semaine : ${tarif.Prix_semaine}<br>`;
+        if(tarif.Taxe_sejour) resultHtml += `Taxe de séjour : ${tarif.Taxe_sejour}<br>`;
+        if(tarif.Prix_draps) resultHtml += `Prix des draps : ${tarif.Prix_draps}<br>`;
+        if(tarif.Prix_menage) resultHtml += `Prix du ménage : ${tarif.Prix_menage}</p>`;
 
         divRes.innerHTML = resultHtml;
     } else {
