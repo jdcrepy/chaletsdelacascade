@@ -147,18 +147,30 @@ dateSelect.addEventListener("change", () => {
 
     const tarif = logements.find(l => l.Logement === logementChoisi && l.Date_debut === dateChoisie);
 
-    if(tarif && tarif.Prix_semaine) {
-        // Afficher toutes les informations disponibles
-        let resultHtml = `<p>Le logement <strong>${logementChoisi}</strong> choisi est disponible !</p>`;
-        resultHtml += `<p>Prix de la semaine : ${tarif.Prix_semaine}<br>`;
-        if(tarif.Taxe_sejour) resultHtml += `Taxe de séjour : ${tarif.Taxe_sejour}<br>`;
-        if(tarif.Prix_draps) resultHtml += `Prix des draps : ${tarif.Prix_draps}<br>`;
-        if(tarif.Prix_menage) resultHtml += `Prix du ménage : ${tarif.Prix_menage}</p>`;
+    if (tarif && tarif.Prix_semaine) {
+    let resultHtml = `<p>Le logement <strong>${logementChoisi}</strong> choisi est disponible !</p>`;
+    resultHtml += `<p>Prix de la semaine : ${tarif.Prix_semaine}<br>`;
+    if (tarif.Taxe_sejour) resultHtml += `Taxe de séjour : ${tarif.Taxe_sejour}<br>`;
+    if (tarif.Prix_draps) resultHtml += `Prix des draps : ${tarif.Prix_draps}<br>`;
+    if (tarif.Prix_menage) resultHtml += `Prix du ménage : ${tarif.Prix_menage}</p>`;
 
-        divRes.innerHTML = resultHtml;
-    } else {
-        divRes.innerHTML = `<p>Désolé, l'appartement <strong>${logementChoisi}</strong> n'est plus disponible sur la période demandée.</p>`;
-    }
+    // 🔹 Nouveau lien mailto dynamique avec objet + corps préremplis
+    const mailObjet = encodeURIComponent(`Demande de réservation – ${logementChoisi}`);
+    const mailCorps = encodeURIComponent(
+        `Bonjour,\n\nJe souhaite réserver le logement "${logementChoisi}" pour la semaine du ${dateChoisie}.\n\nPouvez-vous me confirmer la disponibilité et les modalités de réservation ?\n\nCordialement,\n[Votre nom]`
+    );
+
+    const mailLink = `mailto:cascadechatel@gmail.com?subject=${mailObjet}&body=${mailCorps}`;
+
+    resultHtml += `<p>Si vous souhaitez réserver, merci de nous contacter par mail à 
+    <a href="${mailLink}" style="color:#ffd700;">cascadechatel@gmail.com</a> 
+    ou par téléphone au <strong>04 50 73 22 77</strong>.</p>`;
+
+    divRes.innerHTML = resultHtml;
+} else {
+    divRes.innerHTML = `<p>Désolé, l'appartement <strong>${logementChoisi}</strong> n'est plus disponible sur la période demandée.</p>`;
+}
+
 });
 </script>
 
